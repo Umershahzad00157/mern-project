@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import moongose from "mongoose";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
 import multer from "multer";
 import morgan from "morgan";
@@ -11,8 +11,12 @@ import { fileURLToPath } from "url";
 import mongoose from "mongoose";
 import { register } from "module";
 import authRoutes from "./routes/auth.js";
+import postRoutes from "./routes/posts.js"
 import { register } from "./controllers/auth.js";
+import userRoutes from "./routes/users.js";
+import createPost from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
+
 
  /* Cinfigurations */
 const __filename = fileURLToPath(import.meta.url);
@@ -39,9 +43,13 @@ const upload = multer({Storage});
 
 /*Routes with fies*/
 app.post("auth/register" , upload.single("picture"),  register);
+app.post("posts", verifyToken, upload.single("picture"), createPost);
 
 /*Routes */
 app.use("/auth", authRoutes);
+app.use("/users" , userRoutes);
+app.use("/posts", postRoutes);
+
 /*Mongoose SetUp*/
 
 const PORT = process.env.PORT || 6001 ; 
